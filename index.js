@@ -8,6 +8,8 @@ const EmployeeEngineer = require("./lib/Engineer");
 const EmployeeIntern = require("./lib/Intern");
 const EmployeeManager = require("./lib/Manager");
 let i = 0;
+const teamArray = [];
+let wombat = [];
 const beginningHTML = [
   `
       <!DOCTYPE html>
@@ -22,6 +24,7 @@ const beginningHTML = [
 <body>`,
 ];
 let funct = function () {
+  wombat = [];
   inquirer
     .prompt([
       {
@@ -44,12 +47,6 @@ let funct = function () {
         message: "Enter Job Title",
         name: "title",
         choices: ["Engineer", "Intern", "Manager"],
-      },
-      {
-        type: "checkbox",
-        message: "Would you like to enter another employee?",
-        name: "additionalEmployee",
-        choices: ["Yes", "No"],
       },
     ])
     .then((response) => {
@@ -74,13 +71,15 @@ let funct = function () {
               remp.email,
               response.GitH
             );
-            let wombat = [emp.render()];
-            beginningHTML.push(wombat);
-            const what = beginningHTML.join("");
-            fs.appendFile("index.html", `${what.toString()}`, (err) =>
-              err ? console.error(err) : console.log("Commit logged!")
-            );
-            console.log("response.GitH");
+
+            wombat = [emp.render()];
+            teamArray.push(wombat);
+            //            beginningHTML.push(wombat);
+            //            const what = beginningHTML.join("");
+            //            fs.appendFile("index.html", `${what.toString()}`, (err) =>
+            //              err ? console.error(err) : console.log("Commit logged!1")
+            //            );
+            nextPerson();
           });
       } else if (response.title.toString() == "Intern") {
         const remp = new EmployeeGeneric(
@@ -103,14 +102,16 @@ let funct = function () {
               remp.email,
               response.school
             );
-            let wombat = [emp.render()];
-            beginningHTML.push(wombat);
-            const what = beginningHTML.join("");
 
-            fs.appendFile("index.html", `${what.toString()}`, (err) =>
-              err ? console.error(err) : console.log("Commit logged!")
-            );
-            console.log("response.GitH");
+            let wombat = [emp.render()];
+            teamArray.push(wombat);
+            //           beginningHTML.push(wombat);
+            //           const what = beginningHTML.join("");
+
+            //           fs.appendFile("index.html", `${what.toString()}`, (err) =>
+            //             err ? console.error(err) : console.log("Commit logged!2")
+            //           );
+            nextPerson();
           });
       } else if (response.title.toString() == "Manager") {
         const remp = new EmployeeGeneric(
@@ -133,23 +134,41 @@ let funct = function () {
               remp.email,
               response.officeNumber
             );
-            let wombat = [emp.render()];
-            beginningHTML.push(wombat);
-            const what = beginningHTML.join("");
 
-            fs.appendFile("index.html", `${what.toString()}`, (err) =>
-              err ? console.error(err) : console.log("Commit logged!")
-            );
+            let wombat = [emp.render()];
+            teamArray.push(wombat);
+            //            beginningHTML.push(wombat);
+            //            const what = beginningHTML.join("");
+
+            //            fs.appendFile("index.html", `${what.toString()}`, (err) =>
+            //              err ? console.error(err) : console.log("Commit logged!3")
+            //            );
+            nextPerson();
           });
       }
-
+    });
+};
+let nextPerson = function () {
+  inquirer
+    .prompt([
+      {
+        type: "checkbox",
+        message: "Would you like to enter another employee?",
+        name: "additionalEmployee",
+        choices: ["Yes", "No"],
+      },
+    ])
+    .then((response) => {
       if (response.additionalEmployee.toString() == "Yes") {
         funct();
       } else {
-        fs.appendFile("index.html", `</body></html>`, (err) =>
-          err ? console.error(err) : console.log("Commit logged!")
+        fs.appendFile(
+          "index.html",
+          `${beginningHTML}${teamArray.join("")}</body></html>`,
+          (err) => (err ? console.error(err) : console.log("Commit logged!4"))
         );
       }
     });
 };
+
 funct();
