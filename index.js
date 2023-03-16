@@ -4,40 +4,13 @@ const { join } = require("path");
 const { writeFile } = require("fs/promises");
 const fs = require("fs");
 console.log(EmployeeGeneric);
-inquirer
-  .prompt([
-    {
-      type: "input",
-      message: "Enter name",
-      name: "name",
-    },
-    {
-      type: "input",
-      message: "Enter employee ID",
-      name: "id",
-    },
-    {
-      type: "input",
-      message: "Enter email address",
-      name: "email",
-    },
-    {
-      type: "input",
-      message: "Enter Job Title",
-      name: "title",
-    },
-  ])
-  .then((response) => {
-    const emp = new EmployeeGeneric(response.name, response.id, response.email);
-    emp.render();
-    console.log(response.name),
-      console.log(response.id),
-      console.log(response.email),
-      console.log(response.title);
-
-    fs.appendFile(
-      "index.html",
-      `<!DOCTYPE html>
+const EmployeeEngineer = require("./lib/Engineer");
+const EmployeeIntern = require("./lib/Intern");
+const EmployeeManager = require("./lib/Manager");
+let i = 0;
+const beginningHTML = [
+  `
+      <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -46,10 +19,137 @@ inquirer
     <link rel="stylesheet" href="./dist/style.css">
     <title>Document</title>
 </head>
-<body>
-    ${emp.render()}
-</body>
-</html>`,
-      (err) => (err ? console.error(err) : console.log("Commit logged!"))
-    );
-  });
+<body>`,
+];
+let funct = function () {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Enter name",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "Enter employee ID",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "Enter email address",
+        name: "email",
+      },
+      {
+        type: "checkbox",
+        message: "Enter Job Title",
+        name: "title",
+        choices: ["Engineer", "Intern", "Manager"],
+      },
+      {
+        type: "checkbox",
+        message: "Would you like to enter another employee?",
+        name: "additionalEmployee",
+        choices: ["Yes", "No"],
+      },
+    ])
+    .then((response) => {
+      if (response.title.toString() == "Engineer") {
+        const remp = new EmployeeGeneric(
+          response.name,
+          response.id,
+          response.email
+        );
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              message: "Enter GitHub Username",
+              name: "GitH",
+            },
+          ])
+          .then((response) => {
+            const emp = new EmployeeEngineer(
+              remp.name,
+              remp.id,
+              remp.email,
+              response.GitH
+            );
+            let wombat = [emp.render()];
+            beginningHTML.push(wombat);
+            const what = beginningHTML.join("");
+            fs.appendFile("index.html", `${what.toString()}`, (err) =>
+              err ? console.error(err) : console.log("Commit logged!")
+            );
+            console.log("response.GitH");
+          });
+      } else if (response.title.toString() == "Intern") {
+        const remp = new EmployeeGeneric(
+          response.name,
+          response.id,
+          response.email
+        );
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              message: "Enter School Name",
+              name: "school",
+            },
+          ])
+          .then((response) => {
+            const emp = new EmployeeIntern(
+              remp.name,
+              remp.id,
+              remp.email,
+              response.school
+            );
+            let wombat = [emp.render()];
+            beginningHTML.push(wombat);
+            const what = beginningHTML.join("");
+
+            fs.appendFile("index.html", `${what.toString()}`, (err) =>
+              err ? console.error(err) : console.log("Commit logged!")
+            );
+            console.log("response.GitH");
+          });
+      } else if (response.title.toString() == "Manager") {
+        const remp = new EmployeeGeneric(
+          response.name,
+          response.id,
+          response.email
+        );
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              message: "Enter Office Number",
+              name: "officeNumber",
+            },
+          ])
+          .then((response) => {
+            const emp = new EmployeeManager(
+              remp.name,
+              remp.id,
+              remp.email,
+              response.officeNumber
+            );
+            let wombat = [emp.render()];
+            beginningHTML.push(wombat);
+            const what = beginningHTML.join("");
+
+            fs.appendFile("index.html", `${what.toString()}`, (err) =>
+              err ? console.error(err) : console.log("Commit logged!")
+            );
+          });
+      }
+
+      if (response.additionalEmployee.toString() == "Yes") {
+        funct();
+      } else {
+        fs.appendFile("index.html", `</body></html>`, (err) =>
+          err ? console.error(err) : console.log("Commit logged!")
+        );
+      }
+    });
+};
+funct();

@@ -15,7 +15,13 @@ body {
   justify-content: center;
   align-items: center;
 
-  background-color: #002c47;
+  background: rgb(14, 0, 255);
+  background: radial-gradient(
+    circle,
+    rgba(14, 0, 255, 1) 0%,
+    rgba(25, 25, 25, 1) 50%,
+    rgba(14, 0, 255, 1) 100%
+  );
 }
 
 h1 {
